@@ -142,7 +142,7 @@ def NotFound(error):
 
 
 if __name__ == '__main__':
-    #os.environ.setdefault('FLASK_ENV', 'development')
+    # os.environ.setdefault('FLASK_ENV', 'development')
     app.run(debug=True, use_reloader=False)
     
     
