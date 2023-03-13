@@ -1,0 +1,56 @@
+{% extends 'admin/index.html' %}
+
+{% block title %}  محصول {{product.name}} {% endblock %}
+
+{% block admin_content %}
+
+
+<div class="offset-md-3 col-md-6 mt-3">
+    <!-- general form elements -->
+    <div class="card card-danger p-5">
+        <div class="card-header">
+            <h3 class="card-title text-center"> {{product.name}} </h3>
+        </div>
+        <img class="rounded mx-auto d-block mt-5 mb-5" src="{{url_for('static', filename=product.image)}}" width="500" alt="">
+        <form action="{{url_for('shopping.product_edit', product_id=product.id)}}" method="post" enctype="multipart/form-data" novalidate>
+            {{form.csrf_token}}
+            <p class="mt-2 text-center"> 
+                <span class="text-center text-danger float-right w-50"> نام محصول </span> 
+                <span class="text-center text-success float-left w-50">{{form.name(class="form-control", value=product.name)}}</span> 
+            </p>
+            <br>
+            <p class="mt-2 text-center"> 
+                <span class="text-center text-danger float-right w-50"> قیمت محصول </span> 
+                <span class="text-center text-success float-left w-50">{{form.price(class="form-control", value=product.price)}}</span> 
+            </p>
+            <br>
+            <p class="mt-2 text-center"> 
+                <span class="text-center text-danger float-right w-50"> دسته بندی محصول </span> 
+                <span class="text-center text-success float-left w-50">{{form.category(class="form-control")}}</span> 
+            </p>
+            <br>
+            <p class="mt-2 text-center"> 
+                <span class="text-center text-danger float-right w-50"> تعداد محصول </span> 
+                <span class="text-center text-success float-left w-50">{{form.number(class="form-control", value=product.number)}}</span> 
+            </p>
+            <br>
+            <p class="mt-2 text-center"> 
+                <span class="text-center text-danger float-right w-50"> رتبه بندی محصول </span> 
+                <span class="text-center text-success float-left w-50">{{form.rating(class="form-control", value=product.rating)}}</span> 
+            </p>
+            <br>
+            <p class="mt-2 text-center"> 
+                <span class="text-center text-danger float-right w-50"> عکس محصول </span> 
+                <span class="text-center text-success float-left w-50">{{form.image(class="form-control")}}</span> 
+            </p>
+            <br>
+            <p class="mt-5 text-center">
+                <button type="submit" class="btn btn-block btn-outline-info"> اعمال تغییرات </button>
+            </p>
+        </form>
+        
+    </div>
+</div>
+
+
+{% endblock %}

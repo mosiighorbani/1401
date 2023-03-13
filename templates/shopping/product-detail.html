@@ -1,0 +1,67 @@
+{% extends 'admin/index.html' %}
+
+{% block title %}  محصول {{product.name}} {% endblock %}
+
+{% block admin_content %}
+
+
+<div class="offset-md-3 col-md-6 mt-3">
+    <!-- general form elements -->
+    <div class="card card-danger">
+        <div class="card-header">
+            <h3 class="card-title text-center"> {{product.name}} </h3>
+        </div>
+        <img class="rounded mx-auto d-block mt-5 mb-5" src="{{url_for('static', filename=product.image)}}" width="500" alt="">
+        <p class="mt-2 text-center"> 
+            <span class="text-center text-danger float-right w-50"> نام محصول </span> 
+            <span class="text-center text-success float-left w-50">{{product.name}}</span> 
+        </p>
+        <p class="mt-2 text-center"> 
+            <span class="text-center text-danger float-right w-50"> قیمت محصول </span> 
+            <span class="text-center text-success float-left w-50">{{product.price}}</span> 
+        </p>
+        <p class="mt-2 text-center"> 
+            <span class="text-center text-danger float-right w-50"> دسته بندی محصول </span> 
+            <span class="text-center text-success float-left w-50">{{product.getCategory(product.category_id)}}</span> 
+        </p>
+        {% if current_user.is_admin() %}
+        <p class="mt-2 text-center"> 
+            <span class="text-center text-danger float-right w-50"> تعداد محصول </span> 
+            <span class="text-center text-success float-left w-50">{{product.number}}</span> 
+        </p>
+        {% endif %}
+        {% if product.number < 10 and product.number > 0 %} <i class="text-danger"> the number of this product is {{product.number}}</i> {% endif %}
+        <p class="mt-2 text-center"> 
+            <span class="text-center text-danger float-right w-50"> رتبه بندی محصول </span> 
+            <span class="text-center text-success float-left w-50">{{product.rating}}</span> 
+        </p>
+        {% if current_user.is_admin() %}
+        <p class="mt-2 text-center"> 
+            <span class="text-center text-danger float-right w-50"> زمان محصول </span> 
+            <span class="text-center text-success float-left w-50">{{product.date}}</span> 
+        </p>
+        {% endif %}
+    </div>
+    <div class="">
+        {% if product.id in order_product %} 
+        <a href="{{url_for('shopping.product_buy', product_id=product.id)}}?page=product_detail" class="btn btn-block btn-warning"> حذف محصول از سبد خرید </a>
+        <a href="{{url_for('shopping.cart_details')}}" class="btn btn-block btn-success mt-3"> مشاهده صفحه خرید </a>
+        <br>
+        {% else %}
+        <form class="form-inline" action="{{url_for('shopping.product_buy', product_id=product.id)}}?page=product_detail" method="post">
+            <div class="form-group">
+                <input type="number" name="number" class="form-control", value="1" placeholder="تعداد">
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary btn-block">خرید</button>
+            </div>
+        </form>
+        {% endif %}
+        {% if current_user.is_admin() %}
+        <a href="{{url_for('shopping.product_edit', product_id=product.id)}}" class="btn btn-block btn-outline-info btn-sm mt-5 mb-5">ویرایش</a>
+        {% endif %}
+    </div>
+</div>
+
+
+{% endblock %}

@@ -1,0 +1,140 @@
+{% extends 'admin/index.html' %}
+
+{% block title %} خبر | {{post.title}} {% endblock %}
+
+{% block admin_content %}
+
+{{ super() }}
+{{ ckeditor.load() }}
+
+<div class="offset-md-2 col-md-8">
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0 text-dark">{{post.title}}</h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-left text-sm">
+                        <li class="breadcrumb-item"><a href="{{url_for('blog.posts')}}">اخبار</a></li>
+                        <li class="breadcrumb-item active">{{post.title}}</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <div class="card card-widget">
+        <div class="card-header">
+            <div class="user-block">
+                <img class="img-circle" src="{{url_for('static', filename='img/user4-128x128.jpg')}}" alt="User Image">
+                <span class="username"><a href="{{url_for('blog.post_writer', user_id=post.user_id)}}">{{post.getWriter(post.user_id)}}</a></span>
+                <span class="description">{{ moment(post.updated_at).fromNow() }} به اشتراک گذاشته شد</span>
+            </div>
+            <!-- /.user-block -->
+            <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-toggle="tooltip" title=""
+                    data-original-title="Mark as read">
+                    <i class="fa fa-circle-o"></i></button>
+                <button type="button" class="btn btn-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                </button>
+                <button type="button" class="btn btn-tool" data-widget="remove"><i class="fa fa-times"></i>
+                </button>
+            </div>
+            <!-- /.card-tools -->
+        </div>
+        <!-- /.card-header -->
+        <div class="card-body">
+           
+            <img class="img-fluid pad mr-auto" src="{{url_for('static', filename=post.image)}}">
+            <!-- <p class="card-body">{{post.content}}</p> -->
+            <div class="mb-5"> {{post.contnet}} </div>
+            {{ super() }}
+            {{ckeditor.load()}}
+            <br>
+            <button type="button" class="btn btn-default btn-sm"><i class="fa fa-share"></i> اشتراک گذاری</button>
+            <a href="{{url_for('blog.post_like', post_id=post.id, user_id=current_user.id)}}" class="btn btn-default btn-sm">
+            <!-- likes and dislikes button -->
+            {% set ns = namespace(liked=false) %}
+            {% for post in post.likes %} 
+                {% if current_user.id == (post.get_user_id() | int) %}  
+                {% set ns.liked = True %}
+                {% endif %} 
+            {% endfor %}
+            {% if ns.liked %} 
+            <i class="fa fa-thumbs-o-down" data-toggle="tooltip" data-placement="top" data-html="true" title="{% for person in post.likes %} {{post.getWriter(person.get_user_id())}} <br /> {% endfor %}"></i> 
+            {% else %} 
+            <i class="fa fa-thumbs-o-up"></i> 
+            {% endif %}
+             <!-- END OF likes and dislikes button -->
+            <i>لایک</i>
+            </a>
+            <span class="float-left text-muted text-sm"> <i> {{post.comments|count()}} نظر</i> - <i> {{post.likes|count()}} لایک</i></span>
+            <!-- <button id="ajaxbtn" class="btn btn-success"> ارسال ایجکسی </button> -->
+        </div>
+        <!-- /.card-body -->
+        <div class="card-footer card-comments">
+            {% for comment in comments %}
+            <div class="card-comment mb-3 pr-2" style="border-right:1px solid gray">
+                <!-- User image -->
+                <img class="img-circle img-sm" src="{{url_for('static', filename=comment.getWriterAvatar(comment.user_id))}}">
+
+                <div class="comment-text">
+                    <span class="username">
+                        {{comment.getWriter(comment.user_id)}}
+                        <span class="text-muted float-left">{{moment(comment.created_at).fromNow()}}</span>
+                    </span><!-- /.username -->
+                    {{comment.body}}
+                    {{ ckeditor.load(pkg_type="basic") }}
+                    <button class="reply-link float-left text-danger text-sm btn mb-1" style="background-color: transparent;"> <i class="fa fa-reply"></i> پاسخ </button>
+                    <form class="form-horizontal mt-2" style="display: none;" action="{{url_for('blog.reply_comment', post_id=post.id, comment_id=comment.id)}}" method="post" novalidate>
+                        <div class="input-group input-group-sm mb-0">
+                            <input class="form-control form-control-sm" name="reply" placeholder="نظر خود را در مورد این کامنت تایپ کنید">
+                            <div class="input-group-append">
+                              <button type="submit" class="btn btn-danger">ارسال</button>
+                            </div>
+                          </div>
+                    </form>
+                    <!-- show replies of any comment -->
+                    {% for reply in comment.replies %}
+                    <div class="card-comment mt-3 text-sm p-2">
+                        <img class="img-circle img-sm" src="{{url_for('static', filename=reply.getWriterAvatar(comment.user_id))}}">
+                        <div class="comment-text">
+                            <span class="username">
+                                {{reply.getWriter(reply.user_id)}}
+                                <span class="text-muted float-left">{{moment(reply.created_at).fromNow()}}</span>
+                            </span>
+                            <div>{{reply.body}}</div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    <!-- end of replires of any comment -->
+                </div>
+                <!-- /.comment-text -->
+            </div>
+            <!-- /.card-comment -->
+            {% endfor %}
+        </div>
+        <!-- /.card-footer -->
+
+        <div class="card-footer">
+            <form action="{{url_for('blog.comment_send', post_id=post.id)}}" method="post" novalidate>
+                <!-- <img class="img-fluid img-circle img-sm" src="{{url_for('static', filename=current_user.avatar)}}"> -->
+                <div class="img-push input-group">
+                    {{comment_form.body(class='form-control form-control-sm col-sm-11', placeholder="نظر خود را تایپ و ثبت کنید")}}
+                    <!-- <input type="text" class="form-control form-control-sm col-sm-11" placeholder="نظر خود را تایپ و ثبت کنید"> -->
+                    <div class="input-group-append">
+                        <button type="submit" class="btn btn-info">ارسال</button>
+                    </div>
+                    <!-- <button type="submit" class="form-control form-control-sm btn btn-success col-sm-1">ارسال</button> -->
+                </div>
+            </form>
+        </div>
+        <!-- /.card-footer -->
+    </div>
+    <!-- /.card -->
+    
+</div>
+
+{{ ckeditor.config(name='content') }}
+
+{% endblock %}

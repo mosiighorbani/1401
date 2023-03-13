@@ -1,0 +1,151 @@
+{% extends 'admin/index.html' %}
+
+{% block title %} صفحه خرید {% endblock %}
+
+{% block admin_content %}
+
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>صورتحساب</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-left">
+              <li class="breadcrumb-item"><a href="{{url_for('shopping.cart_list', user_id=current_user.id)}}">فاکتورها</a></li>
+              <li class="breadcrumb-item active">فاکتور خرید شما</li>
+            </ol>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <div class="invoice p-3 mb-3">
+              <!-- title row -->
+              <div class="row">
+                <div class="col-12">
+                  <h4>
+                    <i class="fa fa-globe"></i> شرکت هوش مصنوعی MSTF
+                    <small class="float-left"><span> تاریخ :  </span><span class="text-right" >{{today.strftime('%d-%m-%Y')}}</span></small>
+                  </h4>
+                </div>
+                <!-- /.col -->
+              </div>
+              <!-- info row -->
+              <div class="row invoice-info">
+                <div class="col-sm-4 invoice-col">
+                  <span>از</span>
+                  <address>
+                    <strong> شرکت هوش مصنوعی mstf </strong><br>
+                    <span>آدرس : </span><span>تهران</span><br>
+                    <span>خیابان</span><span> پیروزی </span><br>
+                    <span>تلفن: </span><span> 09355739363 </span> <br>
+                    <span>ایمیل: </span><span> mstf@email.com </span>
+                  </address>
+                </div>
+                <!-- /.col -->
+                <div class="col-sm-4 invoice-col">
+                  <span>به</span>
+                  <address>
+                    <strong> {{current_user.name}} </strong><br>
+                    {% set user_address = current_user.address.split('**-**') %}
+                    آدرس خریدار<br>
+                    {{user_address[0]}} - {{user_address[1]}} - {{user_address[2]}} <br>
+                    تلفن : {{current_user.phone}}<br>
+                    ایمیل : {{current_user.email}}
+                  </address>
+                </div>
+                <!-- /.col -->
+                <div class="col-sm-4 invoice-col">
+                  <b>#سفارش :  </b> <span>{{cart.serial.split('-')[-1]}}</span> <br>
+                  <br>
+                  <b>کد سفارش :</b> <span>{{cart.serial.split('-')[-1]}}</span><br>
+                  <b>تاریخ پرداخت :</b> <span>{{cart.created_at.strftime('%d-%m-%Y')}}</span><br>
+                  <b>اکانت :</b> ۹۶۸-۳۴۵۶۷
+                </div>
+                <!-- /.col -->
+              </div>
+              <!-- /.row -->
+
+              <!-- Table row -->
+              <div class="row">
+                <div class="col-12 table-responsive">
+                  <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th> ردیف </th>
+                        <th>محصول</th>
+                        <th class="text-center">توضیحات</th>
+                        <th class="text-center"># سریال </th>
+                        <th class="text-center">تعداد</th>
+                       <th> قیمت واحد </th>
+                        <th>قیمت کل</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for order in orders %}
+                    <tr>
+                        <td>{{loop.index}}</td>
+                        <td> {{order.get_product_name()}}</td>
+                        <td class="text-center">{{order.get_category_name(order.product_id)}}</td>
+                        <td class="text-center">۴۵۵-۹۸۱-۲۲۱</td>
+                        <td class="text-center">{{order.number}}</td>
+                        <td>{{order.get_price()|int}} <span>تومان</span> </td>
+                        <td>{{(order.get_price()|int) * (order.number|int)}} <span>تومان</span></td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+                <!-- /.col -->
+              </div>
+              <!-- /.row -->
+              <br>
+              <div class="row">
+                <div class="offset-md-3 col-6">
+                  <div class="table-responsive">
+                    <table class="table">
+                      <tbody>
+                        <tr>
+                            <th style="width:50%">مبلغ پرداخت شده (با احتساب مالیات) :</th>
+                            <td><span>{{cart.sum_price}}</span> <span>تومان</span></td>
+                        </tr>
+                        <tr>
+                            <th style="width:50%"> تاریخ پرداخت : </th>
+                            <td>
+                                <span> <i class="fa fa-calendar"></i> {{cart.created_at.strftime("%Y-%m-%d")}}</span>
+                                <span class="mr-3"><i class="fa fa-clock-o"></i>   {{cart.created_at.strftime("%H:%M:%S")}}</span>
+                            </td>
+                        </tr>
+                    </tbody></table>
+                  </div>
+                </div>
+                <!-- /.col -->
+              </div>
+              <!-- /.row -->
+
+              <!-- this row will not appear when printing -->
+              <div class="row no-print">
+                <div class="offset-md-4 col-4">
+                    <a href="{{url_for('shopping.index')}}" class="btn btn-info"><i class="fa fa-print"></i> صفحه محصولات </a>
+                  <a href="invoice-print.html" target="_blank" class="btn btn-default"><i class="fa fa-print"></i> پرینت </a>
+                  <button type="button" class="btn btn-primary float-left ml-2" style="margin-right: 5px;">
+                    <i class="fa fa-download"></i> تولید PDF
+                  </button>
+                </div>
+              </div>
+            </div>
+            <!-- /.invoice -->
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    
+</section>
+<!-- /.content -->
+
+
+{% endblock %}

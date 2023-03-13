@@ -1,0 +1,119 @@
+{% extends 'admin/index.html' %}
+
+{% block title %} لیست محصولات {% endblock %}
+
+{% block admin_content %}
+
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title"> <span>فاکتورهای خرید</span> <span>{{current_user.name}}</span> </h3>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+                    <div id="example1_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
+                        <div class="row">
+                            <div class="col-sm-4 col-md-4">
+                                <div class="input-group dataTables_filter">
+                                    <input type="search" class="form-control form-control-sm" placeholder="جستجو در جدول" aria-label="Search"
+                                     aria-describedby="search-addon" />
+                                    <button id="search-button" type="button" class="btn btn-primary">
+                                        <i class="fa fa-search"></i>
+                                      </button>
+                                </div>
+                            </div>                    
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <table id="example1" class="table table-bordered table-striped mt-2">
+                                    <thead>
+                                        <tr class="text-center">
+                                            <th> ردیف </th>
+                                            <th> نام سفارش دهنده </th>
+                                            <th> سفارشات </th>
+                                            <th> قیمت پرداخت شده (تومان) </th>
+                                            <th> تاریخ سفارش </th>
+                                            <th> سریال سفارش </th>
+                                            <th>  مشاهده فاکتور </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for cart in carts.items %}
+                                        {% set colored = ['text-warning', 'text-danger', 'text-info', 'text-success', 'text-secondary','text-warning'] %}
+                                        <tr class="text-center">
+                                            <td>{{loop.index}}</td>
+                                            <td>{{cart.user()}}</td>
+                                            <td>
+                                                {% set products = cart.get_products() %}
+                                                {% for product in products %}
+                                                <span class="{{colored[(loop.index % 4 )|int]}} p-1">{{product}} , </span>
+                                                {% endfor %}
+                                            </td>
+                                            <td>{{'{0:,}'.format(cart.sum_price | int)}}</td>
+                                            <td><span>{{cart.created_at.strftime("%Y-%m-%d")}}</span></td>
+                                            <td>{{cart.serial.split('-')[-1] if cart.serial != None else 'ثبت نشده'}}</td>
+                                            <td><a href="{{url_for('shopping.buy_checkout', cart_id=cart.id)}}" class="text-info"><span class="fa fa-lg fa-eye"></span></a></td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-5"></div>
+                                    <div class="col-sm-12 col-md-7">
+                                        <div class="dataTables_paginate paging_simple_numbers" id="example1_paginate">
+                                            <ul class="pagination">
+                                                {% if carts.has_prev %}
+                                                <li class="paginate_button page-item previous" id="example1_previous">
+                                                    <a href="{{url_for('shopping.cart_list',user_id=current_user.id, page=carts.prev_num)}}" 
+                                                    aria-controls="example1" data-dt-idx="7" tabindex="0" class="page-link">قبلی</a>
+                                                </li>
+                                                {% endif %}
+                                                {% for page_number in carts.iter_pages() %}
+                                                    {% if page_number %}
+                                                        <li class="paginate_button page-item">
+                                                            <a href="{{url_for('shopping.cart_list', user_id=current_user.id, page=page_number)}}"
+                                                                aria-controls="example1" data-dt-idx="1" tabindex="0" class="page-link">
+                                                            {{page_number}}
+                                                            </a>
+                                                        </li>
+                                                    {% else %}
+                                                        <li class="paginate_button page-item">
+                                                            <a href="#"
+                                                                aria-controls="example1" data-dt-idx="1" tabindex="0" class="page-link">
+                                                            {{page_number}}
+                                                            </a>
+                                                        </li>
+                                                    {% endif %}
+                                                {% endfor %}
+                                                {% if carts.has_next %}
+                                                <li class="paginate_button page-item next" id="example1_next">
+                                                    <a href="{{url_for('shopping.cart_list',user_id=current_user.id, page=carts.next_num)}}"
+                                                        aria-controls="example1" data-dt-idx="7" tabindex="0"
+                                                        class="page-link">بعدی</a>
+                                                </li>
+                                                {% endif %}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+                <!-- /.card-body -->
+
+            </div>
+            <!-- /.card -->
+        </div>
+        <!-- /.col -->
+    </div>
+    <!-- /.row -->
+</section>
+<!-- /.content -->
+
+
+{% endblock %}

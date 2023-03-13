@@ -1,0 +1,47 @@
+{% extends 'admin/index.html' %}
+
+{% block title %} خبرهای  {{user.name}} {% endblock %}
+
+{% block admin_content %}
+
+<div class="offset-md-2 col-md-8">
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="{{url_for('blog.posts')}}">اخبار</a></li>
+                        <li class="breadcrumb-item active"><span>نویسنده : </span><span>{{user.name}}</span></li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    {% for post in post_user %}
+    <div class="card card-widget">
+        <div class="card-header">
+            <div class="user-block">
+                <img class="img-circle" src="{{url_for('static', filename=user.avatar)}}" alt="User Image">
+                <span class="username"><a href="{{url_for('blog.post_detail', post_id=post.id)}}">{{post.title}}</a></span>
+                <span class="description">{{moment(post.updated_at).fromNow(refresh=True)}} به اشتراک گذاشته شد</span>
+            </div>
+            <!-- /.user-block -->
+            <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-toggle="tooltip" title=""
+                    data-original-title="Mark as read">
+                    <i class="fa fa-circle-o"></i></button>
+                <button type="button" class="btn btn-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                </button>
+                <button type="button" class="btn btn-tool" data-widget="remove"><i class="fa fa-times"></i>
+                </button>
+            </div>
+        </div>
+        <div class="card-body row">
+            <img class="img-fluid pad col-md-4" src="{{url_for('static', filename=post.image)}}" width="200" alt="Attachment Image">
+            <p class="card-body col-md-8">{{post.content|truncate(300)}}</p>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock %}

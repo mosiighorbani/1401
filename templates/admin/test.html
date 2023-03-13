@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+    {% if user.role == 0 %}
+    <div class="btn-group">
+        <a href="" class="btn btn-sm btn-success btn-block {% if user.role == 0 %} disabled {% endif %} "> <span> ادمین
+            </span></a>
+        <a href="" class="btn btn-sm btn-primary {% if user.role == 1 %} disabled {% endif %}"><span>درجه1</span></a>
+        <a href="" class="btn btn-sm btn-info {% if user.role == 2 %} disabled {% endif %}"><span>درجه2</span></a>
+        <a href="" class="btn btn-sm btn-warning {% if user.role == 3 %} disabled {% endif %}"><span>عادی</span></a>
+    </div>
+    {% elif user.role == 1 %}
+    <button type="button" class="btn btn-sm btn-info">درجه1</button>
+    {% elif user.role == 2 %}
+    <button type="button" class="btn btn-sm btn-info">درجه2</button>
+    {% else %}
+    <button type="button" class="btn btn-sm btn-info">درجه3</button>
+
+    {% endif %}
+
+
+
+    <div class="form-group">
+        <label for="">انتخاب نوع کاربر</label>
+        <select class="form-control select2 select2-hidden-accessible" name="role" tabindex="-1" aria-hidden="true">
+            <option value="3"> <span class="text-danger"> کاربر عادی </span> </option>
+            <option value="2"> <span class="text-danger"> کاربر نوع 2 </span> </option>
+            <option value="1"> <span class="text-danger"> کاربر نوع 1 </span> </option>
+            <option value="0"> <span class="text-danger"> کاربر ادمین </span> </option>
+          </select>
+    </div>
+
+
+
+    <div class="form-group">
+        <label for="">انتخاب نوع کاربر</label>
+        <select class="form-control select2 select2-hidden-accessible" name="role" tabindex="-1" aria-hidden="true">
+            {% for role in form.role.choices %}
+            <option value={{role[0]}}>{{role[1]}}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+</body>
+
+</html>
+
+
+<label for="exampleInputFile">ارسال فایل</label>
+                    
+                  

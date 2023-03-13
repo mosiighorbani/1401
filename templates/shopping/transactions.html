@@ -1,0 +1,95 @@
+{% extends 'admin/index.html' %}
+
+{% block title %} لیست محصولات {% endblock %}
+
+{% block admin_content %}
+
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title"> معاملات </h3>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+                    <div id="example1_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
+                        <div class="row">
+                            <div class="col-lg-3 col-6">
+                                <!-- small box -->
+                                <div class="small-box bg-info">
+                                    <div class="inner">
+                                        <h4><span>{{'{0:,}'.format(sum|int)}}</span> <span class="text-sm">تومان</span></h4>
+                                        <p> مجموع تراکنش های  سایت </p>
+                                    </div>
+                                    <div class="icon">
+                                        <i class="fa fa-dollar"></i>
+                                    </div>
+                                    <a href="#" class="small-box-footer">اطلاعات بیشتر <i class="fa fa-arrow-circle-left"></i></a>
+                                </div>
+                            </div>
+                            <!-- ./col -->
+                            <div class="col-lg-3 col-6">
+                                <!-- small box -->
+                                <div class="small-box bg-success">
+                                    <div class="inner">
+                                        <h4>{{'{0:,}'.format(sum_user|int)}}</span> <span class="text-sm">تومان</span></h4>
+                                        <p> مجموع تراکنش های کاربر</p>
+                                    </div>
+                                    <div class="icon">
+                                        <i class="fa fa-money"></i>
+                                    </div>
+                                    <a href="#" class="small-box-footer">اطلاعات بیشتر <i class="fa fa-arrow-circle-left"></i></a>
+                                </div>
+                            </div>
+                            <!-- ./col -->
+                            <div class="col-lg-3 col-6">
+                                <!-- small box -->
+                                <div class="small-box bg-warning">
+                                    <div class="inner">
+                                        <h4>{{best_product}}</h4>
+
+                                        <p> بیشترین کالای خریداری شده سایت </p>
+                                    </div>
+                                    <div class="icon">
+                                        <i class="fa fa-shopping-basket"></i>
+                                    </div>
+                                    <a href="#" class="small-box-footer">اطلاعات بیشتر <i
+                                            class="fa fa-arrow-circle-left"></i></a>
+                                </div>
+                            </div>
+                            <!-- ./col -->
+                            <div class="col-lg-3 col-6">
+                                <!-- small box -->
+                                <div class="small-box bg-danger">
+                                    <div class="inner">
+                                        <h4>{{best_sell_user}}</h4>
+
+                                        <p class="text-muted"> بیشترین کالای خریداری شده کاربر</p>
+                                    </div>
+                                    <div class="icon">
+                                        <i class="ion ion-pie-graph"></i>
+                                    </div>
+                                    <a href="#" class="small-box-footer">اطلاعات بیشتر <i
+                                            class="fa fa-arrow-circle-left"></i></a>
+                                </div>
+                            </div>
+                            <!-- ./col -->
+
+                        </div>
+                    </div>
+                </div>
+                <!-- /.card-body -->
+
+            </div>
+            <!-- /.card -->
+        </div>
+        <!-- /.col -->
+    </div>
+    <!-- /.row -->
+</section>
+<!-- /.content -->
+
+
+{% endblock %}

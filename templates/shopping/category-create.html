@@ -1,0 +1,86 @@
+{% extends 'admin/index.html' %}
+
+{% block title %}  دسته بندی جدید {% endblock %}
+
+{% block admin_content %}
+
+
+<div class="offset-md-4 col-md-4 mt-3">
+    <!-- general form elements -->
+    <div class="card card-danger">
+        <div class="card-header">
+            <h3 class="card-title"> ایجاد دسته بندی جدید </h3>
+        </div>
+        <form action="{{url_for('shopping.category_create')}}" method="post" novalidate>
+            
+            {{ form.csrf_token }}
+
+            <div class="card-body">
+                <div class="form-group">
+                    <label for=""> نام دسته بندی</label>
+                    {{form.title(class='form-control', placeholder="نام دسته بندی را وارد کنید")}}
+                </div>
+            </div>
+            <div class="card-footer">
+                <button type="submit" class="btn btn-danger">ذخیره</button>
+            </div>
+        </form>
+    </div>
+    <hr>
+    <br>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <!-- <div class="card-header">
+                    <h3 class="card-title"> لیست دسته بندی ها </h3>
+                </div> -->
+                <!-- /.card-header -->
+                <div class="card-body">
+                    <div id="example1_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <table id="example1" class="table table-bordered table-striped mt-2">
+                                    <thead>
+                                        <tr class="text-center">
+                                            <th> ردیف </th>
+                                            <th> عنوان </th>
+                                            <th> تاریخ ایجاد </th>
+                                            <th>عملیات</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for cat in categories %}
+                                        <tr class="text-center">
+                                            <td>{{loop.index}}</td>
+                                            <td>{{cat.title}}</td>
+                                            <td>{{cat.date.strftime('%Y-%m-%d')}}</td>
+                                            <td>
+                                                <div class="btn-group">
+                                                    <a href="{{url_for('shopping.category_edit', cat_id=cat.id)}}"
+                                                        class="btn btn-sm btn-warning">ویرایش</a>
+                                                    
+                                                    <a href="#"
+                                                        class="btn btn-sm btn-danger">حذف</a>
+                                                    
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+                <!-- /.card-body -->
+
+            </div>
+            <!-- /.card -->
+        </div>
+        <!-- /.col -->
+    </div>
+</div>
+
+
+{% endblock %}

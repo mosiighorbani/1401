@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="wrapper">
+  <!-- Navbar -->
+  {% include 'admin/layout/navbar.html' %}
+  <!-- /.navbar -->
+
+  <!-- Main Sidebar Container -->
+
+  {% include 'admin/layout/sidebar.html' %}
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <div class="offset-md-3 col-md-6">
+      {% include 'flash.html' %}
+    </div>
+    
+    {% block admin_content %}{% endblock %}
+  </div>
+  <!-- /.content-wrapper -->
+  <footer class="main-footer text-center">
+    <strong>CopyLeft &copy; 2020 <a href="#"> MSTF </a>.</strong>
+  </footer>
+
+  <!-- Control Sidebar -->
+  <aside class="control-sidebar control-sidebar-dark">
+    <!-- Control sidebar content goes here -->
+  </aside>
+  <!-- /.control-sidebar -->
+</div>
+<!-- ./wrapper -->
+
+{% endblock %}

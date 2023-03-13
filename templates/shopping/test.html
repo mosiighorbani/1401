@@ -1,0 +1,39 @@
+<div class="row">
+    <div class="col-sm-12 col-md-5"></div>
+    <div class="col-sm-12 col-md-7">
+        <div class="dataTables_paginate paging_simple_numbers" id="example1_paginate">
+            <ul class="pagination">
+                {% if posts.has_prev %}
+                <li class="paginate_button page-item previous disabled" id="example1_previous">
+                    <a href="#" aria-controls="example1" data-dt-idx="0" tabindex="0"
+                        class="page-link">قبلی</a>
+                </li>
+                {% endif %}
+                {% for page_number in posts.iter_pages() %}
+                    {% if page_number %}
+                        <li class="paginate_button page-item">
+                            <a href="{{url_for('blog.posts', page=page_number)}}"
+                                aria-controls="example1" data-dt-idx="1" tabindex="0" class="page-link">
+                            {{page_number}}
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="paginate_button page-item">
+                            <a href="#"
+                                aria-controls="example1" data-dt-idx="1" tabindex="0" class="page-link">
+                            {{page_number}}
+                            </a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+                {% if posts.has_next %}
+                <li class="paginate_button page-item next" id="example1_next">
+                    <a href="{{url_for('blog.posts', page=posts.next_num)}}"
+                        aria-controls="example1" data-dt-idx="7" tabindex="0"
+                        class="page-link">بعدی</a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</div>

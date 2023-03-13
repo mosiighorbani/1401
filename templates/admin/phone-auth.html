@@ -1,0 +1,31 @@
+{% extends 'admin/index.html' %}
+
+{% block title %}  احراز تلفن همراه | {{current_user.name}} {% endblock %}
+
+{% block admin_content %}
+
+
+<div class="offset-md-4 col-md-4 mt-3">
+    <!-- general form elements -->
+    <div class="card card-primary">
+        <div class="card-header">
+            <h3 class="card-title">  احراز تلفن همراه  {{current_user.name}} </h3>
+        </div>
+        <form action="{{ url_for('auth.phone_auth', user_id=current_user.id) }}" method="post" novalidate>
+
+            {{ csrf_token }}
+
+            <div class="card-body">
+                <div class="form-group">
+                    <label for="exampleInputName1"> کد ارسالی </label>
+                    <input type="text" class="form-control" name="code" id="">
+                </div>
+            </div>
+            <div class="card-footer">
+                <button type="submit" class="btn btn-primary">ارسال</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

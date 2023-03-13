@@ -1,0 +1,111 @@
+{% extends 'admin/index.html' %}
+
+{% block title %} لیست محصولات {% endblock %}
+
+{% block admin_content %}
+
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title"> لیست محصولات </h3>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+                    <div id="example1_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
+                        <div class="row">
+                            <div class="col-sm-4 col-md-4">
+                                <div class="input-group dataTables_filter mb-5">
+                                    <input type="search" class="form-control form-control-sm" placeholder="جستجو در جدول" aria-label="Search"
+                                     aria-describedby="search-addon" />
+                                    <button id="search-button" type="button" class="btn btn-primary">
+                                        <i class="fa fa-search"></i>
+                                      </button>
+                                </div>
+                            </div>  
+                            <div class="col-sm-4"></div>   
+                            <div class="col-sm-4">
+                                <a href="{{url_for('shopping.buy_end')}}" 
+                                class="btn btn-info float-left {% if orders|length < 1 %} disabled {% endif %}"> لیست محصولات خریداری شده </a>
+                            </div>         
+                        </div>
+                        <div class="row">
+                            {% for product in products.items %}
+                            <div class="card col-md-3" style="width: 18rem;">
+                                <img class="card-img-top" src="{{url_for('static', filename=product.image)}}" height="250" alt="Card image cap">
+                                <div class="card-body text-center">
+                                    <a href="{{url_for('shopping.product_detail', product_id=product.id)}}"> <h5 class="card-title"> {{product.name}} </h5> </a>
+                                    <p class="card-text"><span>{{product.price}}</span><span class="mr-1">تومان</span></p>
+                                    {% if product.id in order_product %} 
+                                    <a href="{{url_for('shopping.product_buy', product_id=product.id)}}" class="btn btn-warning"> حذف محصول از سبد خرید </a>
+                                    {% else %}
+                                    <form class="form-inline row" action="{{url_for('shopping.product_buy', product_id=product.id)}}" method="post">
+                                        <div class="form-group">
+                                            <input type="number" name="number" value="1" class="form-control", placeholder="تعداد">
+                                        </div>
+                                        <div class="form-group">
+                                            <button type="submit" class="btn btn-primary btn-block mr-1">خرید</button>
+                                        </div>
+                                    </form>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12 col-md-5"></div>
+                            <div class="col-sm-12 col-md-7">
+                                <div class="dataTables_paginate paging_simple_numbers" id="example1_paginate">
+                                    <ul class="pagination">
+                                        {% if products.has_prev %}
+                                        <li class="paginate_button page-item previous disabled" id="example1_previous">
+                                            <a href="#" aria-controls="example1" data-dt-idx="0" tabindex="0"
+                                                class="page-link">قبلی</a>
+                                        </li>
+                                        {% endif %}
+                                        {% for page_number in products.iter_pages() %}
+                                            {% if page_number %}
+                                                <li class="paginate_button page-item">
+                                                    <a href="{{url_for('shopping.products_list', page=page_number)}}"
+                                                        aria-controls="example1" data-dt-idx="1" tabindex="0" class="page-link">
+                                                    {{page_number}}
+                                                    </a>
+                                                </li>
+                                            {% else %}
+                                                <li class="paginate_button page-item">
+                                                    <a href="#"
+                                                        aria-controls="example1" data-dt-idx="1" tabindex="0" class="page-link">
+                                                    {{page_number}}
+                                                    </a>
+                                                </li>
+                                            {% endif %}
+                                        {% endfor %}
+                                        {% if products.has_next %}
+                                        <li class="paginate_button page-item next" id="example1_next">
+                                            <a href="{{url_for('shopping.products_list', page=products.next_num)}}"
+                                                aria-controls="example1" data-dt-idx="7" tabindex="0"
+                                                class="page-link">بعدی</a>
+                                        </li>
+                                        {% endif %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+                <!-- /.card-body -->
+
+            </div>
+            <!-- /.card -->
+        </div>
+        <!-- /.col -->
+    </div>
+    <!-- /.row -->
+</section>
+<!-- /.content -->
+
+
+{% endblock %}

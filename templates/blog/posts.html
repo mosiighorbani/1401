@@ -1,0 +1,130 @@
+{% extends 'admin/index.html' %}
+
+{% block title %} لیست خبرها {% endblock %}
+
+{% block admin_content %}
+
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+
+                <div class="card-header">
+                    <h3 class="card-title"> لیست خبرها </h3>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+                    <div id="example1_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
+                        <div class="row">
+                            <div class="col-sm-4 col-md-4">
+                                <div class="input-group dataTables_filter">
+                                    <input type="search" class="form-control form-control-sm" placeholder="جستجو در جدول" aria-label="Search" aria-describedby="search-addon" />
+                                    <button id="search-button" type="button" class="btn btn-primary">
+                                        <i class="fa fa-search"></i>
+                                      </button>
+                                </div>
+                            </div>                    
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <table id="example1" class="table table-bordered table-striped mt-2">
+                                    <thead>
+                                        <tr class="text-center">
+                                            <th> ردیف </th>
+                                            <th> عنوان </th>
+                                            <th>متن خبر</th>
+                                            <th> نویسنده </th>
+                                            <th>تعداد بازدید</th>
+                                            <th> تاریخ ایجاد </th>
+                                            <th>وضعیت انتشار</th>
+                                            <th>عملیات</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for post in posts.items %}
+                                        <tr class="text-center">
+                                            <td>{{loop.index}}</td>
+                                            <td><a href="{{url_for('blog.post_detail', post_id=post.id)}}">{{post.title}}</a></td>
+                                            <td>{{post.content|truncate(30)}}</td>
+                                            <td>{{post.getWriter(post.user_id)}}</td>
+                                            <td>{{post.views}}</td>
+                                            <td>{{ post.created_at.strftime('%Y-%m-%d') }}</td>
+                                            <td>
+                                                <div class="btn-group">
+                                                <a href="{{url_for('blog.post_publish', post_id=post.id)}}"
+                                                    class="btn btn-sm btn-success {% if post.publish %} disabled {% endif %}"><span>منتشر</span></a>
+                                                <a href="{{url_for('blog.post_publish', post_id=post.id)}}"
+                                                    class="btn btn-sm btn-danger {% if not post.publish %} disabled {% endif %}"><span>پیش نویس</span></a>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="btn-group">
+                                                    <a href="{{url_for('blog.post_edit', post_id=post.id)}}"
+                                                        class="btn btn-sm btn-warning">ویرایش</a>
+                                                    
+                                                    <a href="{{url_for('blog.post_delete', post_id=post.id)}}"
+                                                        class="btn btn-sm btn-danger">حذف</a>
+                                                    
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12 col-md-5"></div>
+                            <div class="col-sm-12 col-md-7">
+                                <div class="dataTables_paginate paging_simple_numbers" id="example1_paginate">
+                                    <ul class="pagination">
+                                        {% if posts.has_prev %}
+                                        <li class="paginate_button page-item previous disabled" id="example1_previous">
+                                            <a href="#" aria-controls="example1" data-dt-idx="0" tabindex="0"
+                                                class="page-link">قبلی</a>
+                                        </li>
+                                        {% endif %}
+                                        {% for page_number in posts.iter_pages() %}
+                                            {% if page_number %}
+                                                <li class="paginate_button page-item">
+                                                    <a href="{{url_for('blog.posts', page=page_number)}}"
+                                                        aria-controls="example1" data-dt-idx="1" tabindex="0" class="page-link">
+                                                    {{page_number}}
+                                                    </a>
+                                                </li>
+                                            {% else %}
+                                                <li class="paginate_button page-item">
+                                                    <a href="#"
+                                                        aria-controls="example1" data-dt-idx="1" tabindex="0" class="page-link">
+                                                    {{page_number}}
+                                                    </a>
+                                                </li>
+                                            {% endif %}
+                                        {% endfor %}
+                                        {% if posts.has_next %}
+                                        <li class="paginate_button page-item next" id="example1_next">
+                                            <a href="{{url_for('blog.posts', page=posts.next_num)}}"
+                                                aria-controls="example1" data-dt-idx="7" tabindex="0"
+                                                class="page-link">بعدی</a>
+                                        </li>
+                                        {% endif %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.card-body -->
+
+            </div>
+            <!-- /.card -->
+        </div>
+        <!-- /.col -->
+    </div>
+    <!-- /.row -->
+</section>
+<!-- /.content -->
+
+
+{% endblock %}

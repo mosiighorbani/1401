@@ -1,0 +1,54 @@
+{% extends 'admin/index.html' %}
+
+{% block title %}  ثبت اطلاعات کاربر {{current_user.name}} {% endblock %}
+
+{% block admin_content %}
+
+
+<div class="offset-md-3 col-md-6 mt-3">
+    <!-- general form elements -->
+    <div class="card card-danger p-5">
+        <div class="card-header">
+            <h3 class="card-title">
+                <span class="fa fa-user fa-lg"></span>
+                <span>{{current_user.name}}</span>
+            </h3>
+        </div>
+        <form action="{{url_for('shopping.user_info')}}" method="post" novalidate>
+            {{form.csrf_token}}
+            {% set user_address = current_user.address.split('**-**') %}
+            <p class="mt-2 text-center"> 
+                <span class="text-center text-danger float-right w-50"> شماره همراه </span> 
+                <span class="text-center text-success float-left w-50">{{form.phone(class="form-control", placeholder='مثال : 09125552233', value=current_user.phone)}}</span> 
+            </p>
+            <br>
+            <p class="mt-2 text-center"> 
+                <span class="text-center text-danger float-right w-50">  استان </span> 
+                <span class="text-center text-success float-left w-50">{{form.province(class="form-control", placeholder='استان خود را وارد نمایید', value=user_address[0])}}</span> 
+            </p>
+            <br>
+            <p class="mt-2 text-center"> 
+                <span class="text-center text-danger float-right w-50">  شهر </span> 
+                <span class="text-center text-success float-left w-50">{{form.city(class="form-control", placeholder='شهر خود را وارد کنید', value=user_address[1])}}</span> 
+            </p>
+            <br>
+            <p class="mt-2 text-center"> 
+                <span class="text-center text-danger float-right w-50">  خیابان </span> 
+                <span class="text-center text-success float-left w-50">{{form.street(class="form-control", placeholder='خیابان یا کوچه محل زندگی خود را وارد نمایید', value=user_address[2])}}</span> 
+            </p>
+            <br>
+            <p class="mt-2 text-center"> 
+                <span class="text-center text-danger float-right w-50">  کد پستی </span> 
+                <span class="text-center text-success float-left w-50">{{form.post_code(class="form-control", placeholder='کد پستی محل زندگی خود را به درستی وارد نمایید', value=user_address[3])}}</span> 
+            </p>
+            <br>
+            <p class="mt-5 text-center">
+                <button type="submit" class="btn btn-block btn-outline-danger"> اعمال تغییرات </button>
+            </p>
+        </form>
+        
+    </div>
+</div>
+
+
+{% endblock %}

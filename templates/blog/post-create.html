@@ -1,0 +1,56 @@
+{% extends 'admin/index.html' %}
+
+{% block title %} ثبت خبر جدید {% endblock %}
+
+{% block admin_content %}
+
+<div class="offset-md-2 col-md-8">
+    <div class="card card-success">
+
+        <div class="card-header">
+            <h3 class="card-title"> خبر جدید </h3>
+        </div>
+        <!-- /.card-header -->
+        <!-- form start -->
+        <form action="{{url_for('blog.post_create')}}" method="post" novalidate  enctype="multipart/form-data">
+
+            {{form.csrf_token}}
+
+            <div class="card-body">
+                <div class="form-group">
+                    <label for="exampleInputEmail1"> عنوان خبر </label>
+                    {{form.title(class='form-control')}}
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputPassword1"> محتوای خبر </label>
+                    {{form.content(class='form-control')}}
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputFile">ارسال عکس </label>
+                    <div class="input-group">
+                        <div class="custom-file">
+                            <input type="file" name="image" class="custom-file-input" id="exampleInputFile">
+                            <label class="custom-file-label" for="exampleInputFile">انتخاب عکس</label>
+                        </div>
+                        <div class="input-group-append">
+                            <span class="input-group-text" id="">Upload</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-check">
+                    {{form.publish(class='form-check-input')}}
+                    <label class="form-check-label" for="exampleCheck1"> منتشر شود؟ </label>
+                </div>
+            </div>
+            <!-- /.card-body -->
+
+            <div class="card-footer">
+                <button type="submit" class="btn btn-primary">ایجاد</button>
+            </div>
+        </form>
+        {{ ckeditor.load() }}
+        {{ ckeditor.config(name='content') }}
+    </div>
+</div>
+
+{% endblock %}

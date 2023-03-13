@@ -1,0 +1,31 @@
+{% extends 'admin/index.html' %}
+
+{% block title %}  ثبت تلفن همراه | {{current_user.name}} {% endblock %}
+
+{% block admin_content %}
+
+
+<div class="offset-md-4 col-md-4 mt-3">
+    <!-- general form elements -->
+    <div class="card card-primary">
+        <div class="card-header">
+            <h3 class="card-title">  ثبت تلفن همراه  {{current_user.name}} </h3>
+        </div>
+        <form action="{{ url_for('auth.phone_register') }}" method="post" novalidate>
+
+            {{ form.csrf_token }}
+
+            <div class="card-body">
+                <div class="form-group">
+                    <label for="exampleInputName1"> شماره همراه </label>
+                    {{form.phone(class='form-control', value=current_user.phone)}}
+                </div>
+            </div>
+            <div class="card-footer">
+                <button type="submit" class="btn btn-primary">ارسال</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

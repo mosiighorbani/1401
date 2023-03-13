@@ -1,0 +1,368 @@
+{% extends 'admin/index.html' %}
+
+{% block title %} شبکه اجتماعی {% endblock %}
+
+{% block admin_content %}
+
+<!-- Main content -->
+<section class="content">
+    
+    <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-3">
+
+            <!-- Profile Image -->
+            <div class="card card-primary card-outline">
+              <div class="card-body box-profile">
+                <div class="text-center">
+                  <img class="profile-user-img img-fluid img-circle" src="{{url_for('static', filename=user.avatar)}}" alt="User profile picture">
+                </div>
+
+                <h3 class="profile-username text-center">{{user.name}}</h3>
+                {% if user.education != None %}
+                <p class="text-muted text-center">{{user.education | replace(",", " ")}}</p>
+                {% endif %}
+                <br>
+                <ul class="list-group list-group-unbordered mb-3">
+                  <li class="list-group-item">
+                    <b class="mr-1">دنبال شونده</b> <a class="float-right">{{follower|count}}</a>
+                  </li>
+                  <li class="list-group-item">
+                    <b class="mr-1">دنبال کننده</b> <a class="float-right">{{following|count}}</a>
+                  </li>
+                  <li class="list-group-item">
+                    <b class="mr-1">دوستان</b> <a class="float-right">۱۳,۲۸۷</a>
+                  </li>
+                </ul>
+                {% if user.id != current_user.id %}
+                  {% if user.is_follow(current_user.id, user.id) %}
+                    <a href="{{url_for('social.follow', user_id=current_user.id, username=user.name)}}" class="btn btn-warning btn-block"><b>دنبال نکردن</b></a>
+                  {% else %}
+                    <a href="{{url_for('social.follow', user_id=current_user.id, username=user.name)}}" class="btn btn-info btn-block"><b>دنبال کردن</b></a>
+                  {% endif %}
+                {% endif %}
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+
+            <!-- About Me Box -->
+            <div class="card card-primary">
+              <div class="card-header">
+                <h3 class="card-title">درباره من</h3>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+                <strong><i class="fa fa-book mr-1"></i> تحصیلات</strong>
+                {% if user.education %}
+                {% set edulist = user.education.split(',') %}
+                <p class="text-muted">{{ edulist[0]}} {{edulist[1]}} <span class="text-sm text-danger">({{edulist[2]}})</span></p>
+                {% endif %}
+                <hr>
+
+                <strong><i class="fa fa-map-marker mr-1"></i> موقعیت</strong>
+
+                <p class="text-muted">{{user.address | replace(",", "-")}}</p>
+                <hr>
+
+                <strong><i class="fa fa-pencil mr-1"></i> مهارت‌ها</strong>
+
+                <p class="text-muted">
+                    {% if user.skills != None %}
+                      {% for item in (user.skills).split(',') %}
+                          <span class="badge badge-info p-1">{{item}}</span>
+                      {% endfor %}
+                    {% endif %}
+                </p>
+
+                <hr>
+
+                <strong><i class="fa fa-file-text-o mr-1"></i> یادداشت</strong>
+
+                <p class="text-muted">{{user.about_me}}</p>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+          </div>
+          <!-- /.col -->
+          <div class="col-md-9">
+            <div class="card">
+              <div class="card-header p-2">
+                <ul class="nav nav-pills">
+                  <li class="nav-item"><a class="nav-link active" href="#activity" data-toggle="tab">فعالیت‌ها</a></li>
+                  {% if current_user.id == user.id %}
+                  <li class="nav-item"><a class="nav-link" href="#timeline" data-toggle="tab">تایم لاین</a></li>
+                  <li class="nav-item"><a class="nav-link" href="#settings" data-toggle="tab">تنظیمات</a></li>
+                  <!-- <li class="nav-item"><a class="nav-link" href="#newpost" data-toggle="tab">مطلب جدید</a></li> -->
+                  <li class="nav-item"><a class="nav-link" href="#newpost" data-toggle="tab">مطلب جدید</a></li>
+                  {% endif %}
+                </ul>
+              </div><!-- /.card-header -->
+              <div class="card-body">
+                <div class="tab-content">
+                  <div class="active tab-pane" id="activity">
+                    <!-- Post -->
+                    {% for post in user_follow_post %}
+                      {% if post != None %}
+                        <div class="post">
+                          <div class="user-block">
+                            <img class="img-circle img-bordered-sm" src="{{url_for('static', filename=post.get_avatar(post.user_id))}}" alt="user image">
+                            <span class="username">
+                              <a href="#"> {{post.get_writer(post.user_id)}} </a>
+                              <a href="#" class="float-left btn-tool"><i class="fa fa-times"></i></a>
+                            </span>
+                            <span class="description">ارسال شده در {{post.created_at.strftime('%Y/%m/%d')}} </span>
+                          </div>
+                          <!-- /.user-block -->
+                          <p> {{post.text}} </p>
+
+                          <p>
+                            <a href="#" class="link-black text-sm mr-2"><i class="fa fa-share mr-1"></i> اشتراک گذاری</a>
+                            <a href="{{url_for('social.social_like', user_id=current_user.id, post_id=post.id)}}" class="link-black text-sm">
+                              {% if current_user.id not in post.user_likes(post.id) %}
+                              <i class="fa fa-thumbs-o-up mr-1 text-success"></i> <i class="text-success">لایک</i></a>
+                              {% else %}
+                              <i class="fa fa-thumbs-o-down mr-1 text-danger"></i> <i class="text-danger">لایک</i> </a>
+                              {% endif %}
+                            <span class="float-left">
+                              <a href="#" class="link-black text-sm text-primary">
+                                <i class="fa fa-comments-o mr-1"></i>  ({{post.comments|count}})
+                              </a>
+                              <a href="#" class="link-black text-sm text-danger">
+                                <i class="fa fa-heart mr-1"></i>  ({{post.user_likes(post.id)|count}})
+                              </a>
+                            </span>
+                          </p>
+                          <!-- /.card-body -->
+                          <div class="card-footer card-comments">
+                            {% for comment in post.comments %}
+                            <div class="card-comment mb-3 pr-2" style="border-right:1px solid gray">
+                                <!-- User image -->
+                                <img class="img-circle img-sm" src="{{url_for('static', filename=comment.getWriterAvatar(comment.user_id))}}">
+
+                                <div class="comment-text">
+                                    <span class="username">
+                                        {{comment.getWriter(comment.user_id)}}
+                                        <span class="text-muted float-left">{{moment(comment.date).fromNow()}}</span>
+                                    </span><!-- /.username -->
+                                    {{comment.text}}
+                                    {{ ckeditor.load(pkg_type="basic") }}
+                                    <button class="reply-link float-left text-danger text-sm btn mb-1" style="background-color: transparent;"> <i class="fa fa-reply"></i> پاسخ </button>
+                                    <form class="form-horizontal mt-2" style="display: none;" action="{{url_for('social.social_reply', post_id=post.id, comment_id=comment.id)}}" method="post" novalidate>
+                                      {{comment_form.csrf_token}}
+                                      <div class="input-group input-group-sm mb-0">
+                                        <!-- <input class="form-control form-control-sm" name="reply" placeholder="نظر خود را در مورد این کامنت تایپ کنید"> -->
+                                        {{comment_form.text(class='form-control', placeholder='نظر خود را در مورد این کامنت وارد نمایید ..')}}
+                                        <div class="input-group-append">
+                                          <button type="submit" class="btn btn-warning">ارسال</button>
+                                        </div>
+                                      </div>
+                                    </form>
+                                    <!-- show replies of any comment -->
+                                    {% for reply in comment.replies %}
+                                    <div class="card-comment mt-3 text-sm p-2">
+                                        <img class="img-circle img-sm" src="{{url_for('static', filename=reply.getWriterAvatar(comment.user_id))}}">
+                                        <div class="comment-text">
+                                            <span class="username">
+                                                {{reply.getWriter(reply.user_id)}}
+                                                <span class="text-muted float-left">{{moment(reply.date).fromNow()}}</span>
+                                            </span>
+                                            <div>{{reply.text}}</div>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                    <!-- end of replires of any comment -->
+                                </div>
+                                <!-- /.comment-text -->
+                            </div>
+                            <!-- /.card-comment -->
+                            {% endfor %}
+                          </div>
+                          <!-- /.card-footer -->
+                          <form class="form-horizontal" action="{{url_for('social.social_comment', post_id=post.id)}}" method="post" novalidate>
+                            <div class="input-group input-group-sm mb-0">
+                              <!-- <input class="form-control form-control-sm" placeholder="نظر خود را تایپ کنید"> -->
+                              {{comment_form.csrf_token}}
+                              {{comment_form.text(class='form-control', placeholder='نظر خود را تایپ کنید ..')}}
+                              <div class="input-group-append">
+                                <button type="submit" class="btn btn-danger">ارسال</button>
+                              </div>
+                            </div>
+                          </form>
+                        </div>
+                      {% endif %}
+                    {% endfor %}
+                    <!-- /.post -->
+                  </div>
+                  <!-- /.tab-pane -->
+                  <div class="tab-pane" id="timeline">
+                    <!-- The timeline -->
+                    
+                    <ul class="timeline timeline-inverse">
+                      <!-- timeline time label -->
+                      {% for post in user_post %}
+                      <li class="time-label">
+                        <span class="bg-warning text-sm">
+                          <i class="text-white">{{post.created_at.strftime('%Y-%m-%d')}}</i>
+                        </span>
+                      </li>
+                      <!-- /.timeline-label -->
+                      <!-- timeline item -->
+                      <li>
+                        <i class="fa fa-envelope bg-primary"></i>
+
+                        <div class="timeline-item">
+                          <span class="time"><i class="fa fa-clock-o"></i> {{post.created_at.strftime('%H:%m')}} </span>
+
+                          <h3 class="timeline-header"><a href="#">Support Team</a> sent you an email</h3>
+
+                          <div class="timeline-body">
+                            {{post.text}}
+                          </div>
+                          <div class="timeline-footer float-left">
+                            <a href="#" data-toggle="tooltip" data-placement="top" title="ویرایش" class="btn btn-primary btn-sm"> <span class="fa fa-edit"></span> </a>
+                            <a href="#" data-toggle="tooltip" data-placement="top" title="حذف" class="btn btn-danger btn-sm"><span class="fa fa-trash"></span></a>
+                          </div>
+                        </div>
+                      </li>
+                      {% endfor %}
+                      <!-- END timeline item -->
+                      <!-- timeline item -->
+                      <li>
+                        <i class="fa fa-user bg-info"></i>
+
+                        <div class="timeline-item">
+                          <span class="time"><i class="fa fa-clock-o"></i> ۵ mins ago</span>
+
+                          <h3 class="timeline-header no-border"><a href="#">Sarah Young</a> accepted your friend request
+                          </h3>
+                        </div>
+                      </li>
+                      <!-- END timeline item -->
+                      <!-- timeline item -->
+                      <li>
+                        <i class="fa fa-comments bg-warning"></i>
+
+                        <div class="timeline-item">
+                          <span class="time"><i class="fa fa-clock-o"></i> ۲۷ mins ago</span>
+
+                          <h3 class="timeline-header"><a href="#">Jay White</a> commented on your post</h3>
+
+                          <div class="timeline-body">
+                            Take me to your leader!
+                            Switzerland is small and neutral!
+                            We are more like Germany, ambitious and misunderstood!
+                          </div>
+                          <div class="timeline-footer">
+                            <a href="#" class="btn btn-warning btn-flat btn-sm">View comment</a>
+                          </div>
+                        </div>
+                      </li>
+                      <!-- END timeline item -->
+                      <!-- timeline time label -->
+                      <li class="time-label">
+                        <span class="bg-success">
+                          ۳ Jan. ۲۰۱۴
+                        </span>
+                      </li>
+                      <!-- /.timeline-label -->
+                      <!-- timeline item -->
+                      <li>
+                        <i class="fa fa-camera bg-purple"></i>
+
+                        <div class="timeline-item">
+                          <span class="time"><i class="fa fa-clock-o"></i> ۲ days ago</span>
+
+                          <h3 class="timeline-header"><a href="#">Mina Lee</a> uploaded new photos</h3>
+
+                          <div class="timeline-body">
+                            <img src="http://placehold.it/150x100" alt="..." class="margin">
+                            <img src="http://placehold.it/150x100" alt="..." class="margin">
+                            <img src="http://placehold.it/150x100" alt="..." class="margin">
+                            <img src="http://placehold.it/150x100" alt="..." class="margin">
+                          </div>
+                        </div>
+                      </li>
+                      <!-- END timeline item -->
+                      <li>
+                        <i class="fa fa-clock-o bg-gray"></i>
+                      </li>
+                    </ul>
+                  </div>
+                  <!-- /.tab-pane -->
+                  <!-- Update user Information For Social Networking -->
+                  <div class="tab-pane" id="settings">
+                    <form class="form-horizontal" action="{{url_for('social.index', username=user.name)}}" method="post" novalidate>
+                        {{form.csrf_token}}
+                        <div class="form-group">
+                            <label for="inputName" class="col-sm-2 control-label">درباره من</label>
+
+                            <div class="col-sm-10">
+                                <!-- <input type="email" class="form-control" id="inputName" placeholder="Name"> -->
+                                {{form.about_me(class='form-control', placeholder='درباره خود بنویسید')}}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputEmail" class="col-sm-2 control-label">مهارت ها</label>
+
+                            <div class="col-sm-10">
+                                <!-- <input type="email" class="form-control" id="inputEmail" placeholder="Email"> -->
+                                <div class="row">
+                                    {{form.skill1(class='form-control col', placeholder=' .. مهارت اول' , value=user.skills.split(',')[0] if user.skills )}}
+                                    {{form.skill2(class='form-control col', placeholder='.. مهارت دوم' ,value=user.skills.split(',')[1]  if user.skills)}}
+                                    {{form.skill3(class='form-control col', placeholder='.. مهارت سوم' ,value=user.skills.split(',')[2]  if user.skills)}}
+                                    {{form.skill4(class='form-control col', placeholder='.. مهارت چهارم' ,value=user.skills.split(',')[3]  if user.skills)}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputName2" class="col-sm-2 control-label">تحصیلات</label>
+
+                            <div class="col-sm-10">
+                                <!-- <input type="text" class="form-control" id="inputName2" placeholder="Name"> -->
+                                <div class="row">
+                                    {{form.education_grade(class='form-control col', placeholder='مقطع تحصیلی', value=user.education.split(',')[0] if user.education)}}
+                                    {{form.education_field(class='form-control col', placeholder=' رشته', value=user.education.split(',')[1] if user.education)}}
+                                    {{form.education_subfield(class='form-control col', placeholder=' گرایش', value=user.education.split(',')[2] if user.education)}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputName2" class="col-sm-2 control-label">محل سکونت</label>
+                            <div class="col-sm-10">
+                                <!-- <input type="text" class="form-control" id="inputName2" placeholder="Name"> -->
+                                <div class="row">
+                                    {{form.province(class='form-control col', placeholder='استان', value=user.address.split(',')[0] if user.address)}}
+                                    {{form.city(class='form-control col', placeholder='شهر', value=user.address.split(',')[1]  if user.address)}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                            <button type="submit" class="btn btn-danger">اعمال تغییرات</button>
+                            </div>
+                        </div>
+                    </form>
+                  </div>
+                  <div class="tab-pane" id="newpost">
+                  <a href="{{url_for('social.newpost', username=user.name)}}"> برای پست جدید کلیک کنید </a>
+                  </div>
+                  <!-- End Of Update user Information For Social Networking -->
+                  <!-- /.tab-pane -->
+                </div>
+                <!-- /.tab-content -->
+              </div><!-- /.card-body -->
+            </div>
+            <!-- /.nav-tabs-custom -->
+          </div>
+          <!-- /.col -->
+        </div>
+        <!-- /.row -->
+      </div><!-- /.container-fluid -->
+    
+</section>
+<!-- /.content -->
+
+
+{% endblock %}
