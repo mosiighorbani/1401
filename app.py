@@ -127,15 +127,9 @@ def unauthorized():
 
 
 
-
-
-
-
 @app.errorhandler(404)
 def NotFound(error):
     return render_template('404.html', error=error)
-
-
 
 
 
